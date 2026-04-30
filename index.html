@@ -49,21 +49,31 @@
       background: linear-gradient(to left, transparent, #B8963E 40%, #B8963E 60%, transparent);
     }
 
-    /* ── Hero image position ─────────────────────────────── */
-    /* Landscape photo — faces sit in the upper-center third */
-    .hero-img { object-position: center 30%; }
+    /* ── Hero image ──────────────────────────────────────── */
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+    }
 
-    /* Mobile: zoom out by stopping 'cover' and fitting the image at the top */
+    /* Mobile: shift anchor so both faces stay in view */
     @media (max-width: 640px) {
-      .hero-img { 
-        object-fit: contain; 
-        object-position: top center; 
+      .hero-img {
+        object-position: 60% 25%;
       }
     }
 
     /* ── Hero overlay ─────────────────────────────────────── */
     .hero-overlay {
-      /* Base overlay now controlled by tailwind classes */
+      background: linear-gradient(
+        to bottom,
+        rgba(44, 42, 38, 0.25) 0%,
+        rgba(44, 42, 38, 0.45) 50%,
+        rgba(44, 42, 38, 0.85) 100%
+      );
     }
 
     /* ── Scroll fade-in ───────────────────────────────────── */
@@ -162,17 +172,17 @@
   <!-- ══════════════════════════════════════════════════════
        SECTION 1 — HERO
   ══════════════════════════════════════════════════════ -->
-  <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+  <section id="home" class="relative min-h-screen flex items-end justify-center overflow-hidden">
 
-    <div class="absolute inset-0 bg-dark flex flex-col justify-start">
+    <div class="absolute inset-0 bg-dark">
       <img src="./images/lole.jpg" alt="נעמה וכרם על הבמה"
-           class="w-full h-full object-cover hero-img"
+           class="hero-img"
            loading="eager" fetchpriority="high" />
-      <div class="hero-overlay absolute inset-0 pointer-events-none bg-gradient-to-b from-dark/40 via-dark/60 to-dark/95"></div>
+      <div class="hero-overlay absolute inset-0 pointer-events-none"></div>
     </div>
 
-    <!-- Hero content -->
-    <div class="relative z-10 text-center px-5 pt-20">
+    <!-- Hero content — sits at the bottom so text never covers faces -->
+    <div class="relative z-10 text-center px-5 pb-20 pt-28">
       <p class="text-gold uppercase tracking-[0.3em] text-xs font-medium mb-5 fade-in">
         NAAMA &amp; KEREM
       </p>

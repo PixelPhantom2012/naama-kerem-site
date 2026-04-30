@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="נעמה וכרם — דואט אקוסטי. פופ ישראלי ולועזי לאירועים, קבלות פנים ואירועי תרבות." />
+  <title>נעמה וכרם | דואט אקוסטי</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@400;600;700&family=Heebo:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream:        '#F7F4EF',
+            'cream-dark': '#EDE8DE',
+            dark:         '#2C2A26',
+            gold:         '#B8963E',
+            'text-main':  '#1E1E1E',
+            'text-muted': '#666666',
+          },
+          fontFamily: {
+            serif: ['"Noto Serif Hebrew"', 'serif'],
+            sans:  ['Heebo', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ── Base ─────────────────────────────────────────────── */
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Heebo', sans-serif;
+      background-color: #F7F4EF;
+      color: #1E1E1E;
+    }
+
+    /* ── Gold divider ─────────────────────────────────────── */
+    .gold-divider {
+      height: 1px;
+      background: linear-gradient(to left, transparent, #B8963E 40%, #B8963E 60%, transparent);
+    }
+
+    /* ── Hero image position ─────────────────────────────── */
+    /* Landscape photo — faces sit in the upper-center third */
+    .hero-img { object-position: center 30%; }
+
+    /* Mobile: full center works well for this landscape image */
+    @media (max-width: 640px) {
+      .hero-img { object-position: center 35%; }
+    }
+
+    /* ── Hero overlay ─────────────────────────────────────── */
+    .hero-overlay {
+      background: linear-gradient(
+        to bottom,
+        rgba(44, 42, 38, 0.45) 0%,
+        rgba(44, 42, 38, 0.65) 100%
+      );
+    }
+
+    /* ── Scroll fade-in ───────────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Stagger children inside a fade-in container */
+    .fade-in:nth-child(2) { transition-delay: 0.1s; }
+    .fade-in:nth-child(3) { transition-delay: 0.2s; }
+    .fade-in:nth-child(4) { transition-delay: 0.3s; }
+
+    /* ── Chip hover ───────────────────────────────────────── */
+    .chip { transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+    .chip:hover { box-shadow: 0 0 0 1px #B8963E; }
+
+    /* ── Date input RTL fix ───────────────────────────────── */
+    input[type="date"] { direction: rtl; }
+
+    /* ── YouTube aspect-ratio placeholder ────────────────── */
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 0.75rem;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  </style>
+</head>
+
+<body class="font-sans antialiased">
+
+  <!-- ══════════════════════════════════════════════════════
+       HEADER — sticky, dark
+  ══════════════════════════════════════════════════════ -->
+  <header id="site-header" class="fixed top-0 right-0 left-0 z-50 bg-dark/75 backdrop-blur-sm">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8">
+      <div class="flex items-center justify-between h-16 lg:h-20">
+
+        <!-- Band name (RTL start = right) -->
+        <a href="#home" class="font-serif text-xl font-bold text-gold tracking-wide hover:text-gold/80 transition-colors">
+          נעמה וכרם
+        </a>
+
+        <!-- Desktop navigation -->
+        <nav class="hidden md:flex items-center gap-7">
+          <a href="#home"       class="text-cream/75 hover:text-gold transition-colors text-sm font-medium">בית</a>
+          <a href="#about"      class="text-cream/75 hover:text-gold transition-colors text-sm font-medium">עלינו</a>
+          <a href="#repertoire" class="text-cream/75 hover:text-gold transition-colors text-sm font-medium">הרפרטואר</a>
+          <a href="#videos"     class="text-cream/75 hover:text-gold transition-colors text-sm font-medium">הופעות</a>
+          <a href="#contact"    class="bg-gold text-dark px-6 py-2 rounded-full text-sm font-semibold hover:bg-gold/85 transition-colors">
+            צור קשר
+          </a>
+        </nav>
+
+        <!-- Hamburger (mobile) -->
+        <button id="hamburger-btn" aria-label="פתח תפריט" aria-expanded="false"
+                class="md:hidden text-cream p-2 -ml-2 focus:outline-none">
+          <svg id="icon-open"  class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <svg id="icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-dark/90 border-t border-gold/20">
+      <nav class="flex flex-col px-5 py-5 gap-1">
+        <a href="#home"       class="mobile-link text-cream/80 hover:text-gold py-2.5 font-medium transition-colors">בית</a>
+        <a href="#about"      class="mobile-link text-cream/80 hover:text-gold py-2.5 font-medium transition-colors">עלינו</a>
+        <a href="#repertoire" class="mobile-link text-cream/80 hover:text-gold py-2.5 font-medium transition-colors">הרפרטואר</a>
+        <a href="#videos"     class="mobile-link text-cream/80 hover:text-gold py-2.5 font-medium transition-colors">הופעות</a>
+        <a href="#contact"    class="mobile-link text-cream/80 hover:text-gold py-2.5 font-medium transition-colors">צור קשר</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 1 — HERO
+  ══════════════════════════════════════════════════════ -->
+  <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+
+    <div class="absolute inset-0 bg-dark">
+      <img src="./images/lole.jpg" alt="נעמה וכרם על הבמה"
+           class="w-full h-full object-cover hero-img"
+           loading="eager" fetchpriority="high" />
+      <div class="hero-overlay absolute inset-0 pointer-events-none"></div>
+    </div>
+
+    <!-- Hero content -->
+    <div class="relative z-10 text-center px-5 pt-20">
+      <p class="text-gold uppercase tracking-[0.3em] text-xs font-medium mb-5 fade-in">
+        NAAMA &amp; KEREM
+      </p>
+      <h1 class="font-serif text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-4 leading-tight fade-in"
+          style="text-shadow: 0 2px 24px rgba(0,0,0,0.4);">
+        נעמה וכרם
+      </h1>
+      <p class="text-xl sm:text-2xl text-cream/85 font-light mb-12 fade-in">
+        דואט אקוסטי
+      </p>
+      <a href="#contact"
+         class="inline-block bg-gold text-dark font-semibold px-10 py-4 rounded-full text-lg
+                hover:bg-gold/90 hover:scale-105 transition-all duration-300 shadow-xl fade-in">
+        להזמנת הופעה
+      </a>
+    </div>
+
+    <!-- Scroll arrow -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/50 animate-bounce pointer-events-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </div>
+  </section>
+
+  <div class="gold-divider"></div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 2 — ABOUT
+  ══════════════════════════════════════════════════════ -->
+  <section id="about" class="py-20 lg:py-28 bg-cream">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8">
+
+      <div class="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+
+        <!-- Image — right side in RTL (first in DOM) -->
+        <div class="w-full md:w-5/12 fade-in">
+          <div class="relative">
+            <!-- Decorative gold border offset -->
+            <div class="absolute -top-4 -right-4 w-full h-full border border-gold/40 rounded-2xl pointer-events-none"></div>
+            <img src="./images/about-photo.jpg" alt="נעמה וכרם"
+                 class="w-full h-80 md:h-[26rem] object-cover rounded-2xl shadow-2xl relative z-10"
+                 loading="lazy" />
+          </div>
+        </div>
+
+        <!-- Text — left side in RTL (second in DOM) -->
+        <div class="w-full md:w-7/12 fade-in">
+          <p class="text-gold uppercase tracking-[0.25em] text-xs font-medium mb-3">עלינו</p>
+          <h2 class="font-serif text-3xl lg:text-4xl font-bold text-dark mb-6 leading-snug">
+            מוסיקה שמגיעה ממקום אמיתי
+          </h2>
+          <p class="text-text-muted text-lg leading-relaxed mb-10">
+            נעמה — זמרת ונגנית גיטרה, בוגרת בית ספר למוסיקה. כרם — קלידן ומוזיקאי שגדל על הבמה.
+            כשהשניים פגשו זה את זה משהו התחבר — לא רק מוזיקלית, אלא בדרך שבה הם קוראים קהל
+            ויודעים בדיוק מה הרגע צריך. מאז הם מופיעים יחד ומביאים עמם אנרגיה חמה וביצועים חיים.
+          </p>
+
+          <!-- Instrument cards -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-cream-dark rounded-2xl px-6 py-5">
+              <p class="font-serif text-lg font-bold text-dark mb-1.5">נעמה</p>
+              <p class="text-text-muted text-sm leading-relaxed">שירה · גיטרה אקוסטית · כלי הקשה</p>
+            </div>
+            <div class="bg-cream-dark rounded-2xl px-6 py-5">
+              <p class="font-serif text-lg font-bold text-dark mb-1.5">כרם</p>
+              <p class="text-text-muted text-sm leading-relaxed">קלידים · קולות שניים</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-divider"></div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 3 — REPERTOIRE
+  ══════════════════════════════════════════════════════ -->
+  <section id="repertoire" class="py-20 lg:py-28 bg-cream-dark">
+    <div class="max-w-5xl mx-auto px-5 sm:px-8">
+
+      <!-- Heading -->
+      <div class="text-center mb-14 fade-in">
+        <p class="text-gold uppercase tracking-[0.25em] text-xs font-medium mb-3">מה נגנים</p>
+        <h2 class="font-serif text-3xl lg:text-4xl font-bold text-dark mb-4">הרפרטואר שלנו</h2>
+        <p class="text-text-muted max-w-md mx-auto text-base">
+          טעימה מהרפרטואר שלנו — ניגון מגוון שמדבר לכולם. פתוחים גם לבקשות מיוחדות.
+        </p>
+      </div>
+
+      <!-- Category: ישראלי עכשווי -->
+      <div class="mb-10 fade-in">
+        <p class="text-center text-dark/40 text-xs uppercase tracking-[0.2em] font-medium mb-5">
+          ישראלי עכשווי
+        </p>
+        <div class="flex flex-wrap justify-center gap-3">
+          <span class="chip bg-cream text-text-main border border-gold/25 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">אחד שיודע — אסף אמדורסקי</span>
+          <span class="chip bg-cream text-text-main border border-gold/25 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">שיר פשוט — עדן חסון</span>
+          <span class="chip bg-cream text-text-main border border-gold/25 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">ממכר — אריאל זילבר</span>
+          <span class="chip bg-cream text-text-main border border-gold/25 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">מדינת ישראל — מוקי</span>
+          <span class="chip bg-cream text-text-main border border-gold/25 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">סיפור אהבה — אייל גולן</span>
+        </div>
+      </div>
+
+      <!-- Category: קלאסיקות ישראליות -->
+      <div class="mb-10 fade-in">
+        <p class="text-center text-dark/40 text-xs uppercase tracking-[0.2em] font-medium mb-5">
+          קלאסיקות ישראליות
+        </p>
+        <div class="flex flex-wrap justify-center gap-3">
+          <span class="chip bg-dark text-cream border border-gold/30 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">ירושלים של זהב — נעמי שמר</span>
+          <span class="chip bg-dark text-cream border border-gold/30 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">כאן — אריק איינשטיין</span>
+          <span class="chip bg-dark text-cream border border-gold/30 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">שיר הגשם — כוורת</span>
+          <span class="chip bg-dark text-cream border border-gold/30 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">בואי — שלמה ארצי</span>
+          <span class="chip bg-dark text-cream border border-gold/30 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">לאן — יהורם גאון</span>
+        </div>
+      </div>
+
+      <!-- Category: לועזי -->
+      <div class="fade-in">
+        <p class="text-center text-dark/40 text-xs uppercase tracking-[0.2em] font-medium mb-5">
+          לועזי
+        </p>
+        <div class="flex flex-wrap justify-center gap-3">
+          <span class="chip bg-cream text-text-main border border-gold/25 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">Perfect — Ed Sheeran</span>
+          <span class="chip bg-cream text-text-main border border-gold/25 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">The Scientist — Coldplay</span>
+          <span class="chip bg-cream text-text-main border border-gold/25 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">Come Away With Me — Norah Jones</span>
+          <span class="chip bg-cream text-text-main border border-gold/25 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">Lucky — Jason Mraz</span>
+          <span class="chip bg-cream text-text-main border border-gold/25 px-5 py-2.5 rounded-full text-sm font-medium cursor-default">Yesterday — The Beatles</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="gold-divider"></div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 4 — VIDEOS (על הבמה)
+
+       !! SETUP REQUIRED !!
+       Replace VIDEO_ID_1, VIDEO_ID_2, VIDEO_ID_3 below with
+       the actual YouTube video IDs supplied by the client.
+       A YouTube video URL looks like:
+         https://www.youtube.com/watch?v=XXXXXXXXXXX
+       The ID is the part after "v=" (11 characters).
+       Also update the caption text under each video.
+  ══════════════════════════════════════════════════════ -->
+  <section id="videos" class="py-20 lg:py-28 bg-dark">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8">
+
+      <!-- Heading -->
+      <div class="text-center mb-14 fade-in">
+        <p class="text-gold uppercase tracking-[0.25em] text-xs font-medium mb-3">תראו ותחליטו</p>
+        <h2 class="font-serif text-3xl lg:text-4xl font-bold text-cream mb-4">על הבמה</h2>
+        <p class="text-cream/45 max-w-md mx-auto text-base">
+          כמה רגעים מהופעות חיות
+        </p>
+      </div>
+
+      <!-- Video grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+
+        <!-- Video 1 ─ replace VIDEO_ID_1 -->
+        <div class="fade-in">
+          <div class="video-wrapper shadow-2xl">
+            <iframe
+              src="https://www.youtube.com/embed/VIDEO_ID_1?rel=0&modestbranding=1"
+              title="נעמה וכרם — הופעה חיה 1"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              loading="lazy">
+            </iframe>
+          </div>
+          <p class="text-cream/60 text-sm mt-3 text-center font-medium">
+            שם שיר — שם המקום <!-- עדכנו את הכיתוב -->
+          </p>
+        </div>
+
+        <!-- Video 2 ─ replace VIDEO_ID_2 -->
+        <div class="fade-in">
+          <div class="video-wrapper shadow-2xl">
+            <iframe
+              src="https://www.youtube.com/embed/VIDEO_ID_2?rel=0&modestbranding=1"
+              title="נעמה וכרם — הופעה חיה 2"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              loading="lazy">
+            </iframe>
+          </div>
+          <p class="text-cream/60 text-sm mt-3 text-center font-medium">
+            שם שיר — שם המקום <!-- עדכנו את הכיתוב -->
+          </p>
+        </div>
+
+        <!-- Video 3 ─ replace VIDEO_ID_3 -->
+        <div class="fade-in md:col-span-2 lg:col-span-1">
+          <div class="video-wrapper shadow-2xl">
+            <iframe
+              src="https://www.youtube.com/embed/VIDEO_ID_3?rel=0&modestbranding=1"
+              title="נעמה וכרם — הופעה חיה 3"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              loading="lazy">
+            </iframe>
+          </div>
+          <p class="text-cream/60 text-sm mt-3 text-center font-medium">
+            שם שיר — שם המקום <!-- עדכנו את הכיתוב -->
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-divider"></div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 5 — CONTACT
+
+       Email delivery via formsubmit.co — no account needed.
+       On the FIRST ever form submission, formsubmit.co will
+       send a one-time confirmation email to hagaiheshes@gmail.com.
+       Click "Activate Form" in that email, and every future
+       submission will arrive directly in the inbox.
+       Nothing else to configure.
+  ══════════════════════════════════════════════════════ -->
+  <section id="contact" class="py-20 lg:py-28 bg-cream">
+    <div class="max-w-5xl mx-auto px-5 sm:px-8">
+
+      <!-- Heading -->
+      <div class="text-center mb-14 fade-in">
+        <p class="text-gold uppercase tracking-[0.25em] text-xs font-medium mb-3">בואו נדבר</p>
+        <h2 class="font-serif text-3xl lg:text-4xl font-bold text-dark mb-4">יצירת קשר</h2>
+        <p class="text-text-muted max-w-sm mx-auto text-base">
+          שלחו לנו הודעה ונחזור אליכם בהקדם האפשרי
+        </p>
+      </div>
+
+      <div class="flex flex-col lg:flex-row gap-10 lg:gap-14">
+
+        <!-- ── Contact form ───────────────────────────── -->
+        <div class="flex-1 fade-in">
+          <form id="contact-form"
+                action="https://formsubmit.co/ajax/hagaiheshes@gmail.com"
+                method="POST"
+                novalidate
+                class="space-y-5">
+
+            <!-- Formsubmit.co configuration -->
+            <input type="hidden" name="_subject"  value="הזמנת הופעה חדשה — נעמה וכרם" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="_captcha"  value="false" />
+            <!-- Honeypot anti-spam -->
+            <input type="text" name="_honey" class="hidden" tabindex="-1" autocomplete="off" />
+
+            <div>
+              <label for="name" class="block text-sm font-semibold text-dark mb-1.5">
+                שם מלא <span class="text-gold">*</span>
+              </label>
+              <input type="text" id="name" name="name" required
+                     placeholder="השם שלך"
+                     class="w-full px-4 py-3 rounded-xl border border-cream-dark bg-cream-dark/60
+                            text-text-main placeholder-text-muted/60
+                            focus:outline-none focus:ring-2 focus:ring-gold/40 focus:border-gold
+                            transition-all text-base" />
+            </div>
+
+            <div>
+              <label for="contact-info" class="block text-sm font-semibold text-dark mb-1.5">
+                טלפון או אימייל <span class="text-gold">*</span>
+              </label>
+              <input type="text" id="contact-info" name="contact_info" required
+                     placeholder="050-0000000 או your@email.com"
+                     class="w-full px-4 py-3 rounded-xl border border-cream-dark bg-cream-dark/60
+                            text-text-main placeholder-text-muted/60
+                            focus:outline-none focus:ring-2 focus:ring-gold/40 focus:border-gold
+                            transition-all text-base" />
+            </div>
+
+            <div>
+              <label for="event-date" class="block text-sm font-semibold text-dark mb-1.5">
+                תאריך האירוע
+              </label>
+              <input type="date" id="event-date" name="event_date"
+                     class="w-full px-4 py-3 rounded-xl border border-cream-dark bg-cream-dark/60
+                            text-text-main
+                            focus:outline-none focus:ring-2 focus:ring-gold/40 focus:border-gold
+                            transition-all text-base" />
+            </div>
+
+            <div>
+              <label for="notes" class="block text-sm font-semibold text-dark mb-1.5">
+                הערות
+              </label>
+              <textarea id="notes" name="notes" rows="4"
+                        placeholder="סוג האירוע, מיקום, פרטים נוספים..."
+                        class="w-full px-4 py-3 rounded-xl border border-cream-dark bg-cream-dark/60
+                               text-text-main placeholder-text-muted/60
+                               focus:outline-none focus:ring-2 focus:ring-gold/40 focus:border-gold
+                               transition-all text-base resize-none"></textarea>
+            </div>
+
+            <button type="submit" id="submit-btn"
+                    class="w-full bg-gold text-dark font-semibold py-4 rounded-full text-lg
+                           hover:bg-gold/90 hover:shadow-lg transition-all duration-300
+                           disabled:opacity-60 disabled:cursor-not-allowed">
+              שלחו לנו הודעה
+            </button>
+
+            <!-- Inline messages -->
+            <div id="form-success"
+                 class="hidden text-center py-4 px-6 bg-emerald-50 text-emerald-700
+                        rounded-xl border border-emerald-200 font-medium">
+              תודה! נחזור אליכם בהקדם.
+            </div>
+            <div id="form-error"
+                 class="hidden text-center py-4 px-6 bg-red-50 text-red-700
+                        rounded-xl border border-red-200 font-medium">
+              אירעה שגיאה. אנא נסו שנית או פנו אלינו ישירות בוואטסאפ.
+            </div>
+
+          </form>
+        </div>
+
+        <!-- ── Direct contact sidebar ─────────────────── -->
+        <div class="lg:w-72 shrink-0 fade-in">
+          <div class="bg-cream-dark rounded-2xl p-8">
+            <h3 class="font-serif text-xl font-bold text-dark mb-3 leading-snug">
+              מעדיפים לדבר ישירות?
+            </h3>
+            <p class="text-text-muted text-sm leading-relaxed mb-7">
+              אפשר לפנות אלינו בוואטסאפ או בטלפון — נשמח לשמוע.
+            </p>
+
+            <!-- WhatsApp -->
+            <a href="https://wa.me/972532851277?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%9E%D7%95%D7%A2%20%D7%A4%D7%A8%D7%98%D7%99%D7%9D%20%D7%A2%D7%9C%20%D7%94%D7%95%D7%A4%D7%A2%D7%94"
+               target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-3 w-full bg-[#25D366] text-white
+                      font-semibold py-3.5 rounded-full hover:bg-[#1ebe5d] transition-colors mb-3 text-base">
+              <!-- WhatsApp icon (inline SVG — no external library) -->
+              <svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94
+                         1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059
+                         -.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371
+                         -.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01
+                         -.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198
+                         2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719
+                         2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87
+                         0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45
+                         4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45
+                         -4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0
+                         2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0
+                         11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+              </svg>
+              וואטסאפ
+            </a>
+
+            <!-- Phone -->
+            <a href="tel:0532851277"
+               class="flex items-center justify-center gap-3 w-full border-2 border-dark text-dark
+                      font-semibold py-3.5 rounded-full hover:bg-dark hover:text-cream
+                      transition-colors text-base">
+              <!-- Phone icon (inline SVG) -->
+              <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257
+                         1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1
+                         1 0 01.684.948V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/>
+              </svg>
+              053-285-1277
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-divider"></div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════ -->
+  <footer class="bg-dark py-10">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 text-center">
+      <p class="font-serif text-gold text-xl font-semibold mb-2">נעמה וכרם</p>
+      <p class="text-cream/35 text-sm">© 2026 נעמה וכרם | כל הזכויות שמורות</p>
+    </div>
+  </footer>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════════════════════ -->
+  <script>
+    /* ── Hamburger menu ──────────────────────────────── */
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mobileMenu   = document.getElementById('mobile-menu');
+    const iconOpen     = document.getElementById('icon-open');
+    const iconClose    = document.getElementById('icon-close');
+
+    hamburgerBtn.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden');
+      iconOpen.classList.toggle('hidden',  !isOpen);
+      iconClose.classList.toggle('hidden',  isOpen);
+      hamburgerBtn.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    // Close on nav link click
+    document.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        iconOpen.classList.remove('hidden');
+        iconClose.classList.add('hidden');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    /* ── Scroll fade-in (IntersectionObserver) ───────── */
+    const fadeObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            fadeObserver.unobserve(entry.target); // animate once
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    // Trigger hero elements immediately
+    document.querySelectorAll('#home .fade-in').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 150);
+    });
+
+    // Observe all other fade-in elements
+    document.querySelectorAll('.fade-in:not(#home .fade-in)').forEach(el => {
+      fadeObserver.observe(el);
+    });
+
+    /* ── Formsubmit.co AJAX form ─────────────────────── */
+    const form       = document.getElementById('contact-form');
+    const submitBtn  = document.getElementById('submit-btn');
+    const successMsg = document.getElementById('form-success');
+    const errorMsg   = document.getElementById('form-error');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Client-side validation: name + at least one contact method
+      const name        = form.querySelector('#name').value.trim();
+      const contactInfo = form.querySelector('#contact-info').value.trim();
+      if (!name || !contactInfo) {
+        errorMsg.textContent = 'אנא מלאו שם מלא וטלפון או אימייל.';
+        errorMsg.classList.remove('hidden');
+        successMsg.classList.add('hidden');
+        return;
+      }
+
+      submitBtn.disabled    = true;
+      submitBtn.textContent = 'שולח...';
+      successMsg.classList.add('hidden');
+      errorMsg.classList.add('hidden');
+
+      try {
+        // formsubmit.co AJAX endpoint returns JSON { success: "true" }
+        const response = await fetch(form.action, {
+          method:  'POST',
+          body:    new FormData(form),
+          headers: { 'Accept': 'application/json' },
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.ok && data.success === 'true') {
+          form.reset();
+          successMsg.textContent = 'תודה! נחזור אליכם בהקדם.';
+          successMsg.classList.remove('hidden');
+        } else {
+          throw new Error('submission failed');
+        }
+      } catch {
+        errorMsg.textContent = 'אירעה שגיאה. אנא נסו שנית או פנו אלינו ישירות בוואטסאפ.';
+        errorMsg.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled    = false;
+        submitBtn.textContent = 'שלחו לנו הודעה';
+      }
+    });
+  </script>
+
+</body>
+</html>

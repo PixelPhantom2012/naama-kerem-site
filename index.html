@@ -49,6 +49,13 @@
       background: linear-gradient(to left, transparent, #B8963E 40%, #B8963E 60%, transparent);
     }
 
+    /* ── Hero section height ─────────────────────────────── */
+    .hero-section { min-height: 100vh; }
+
+    @media (max-width: 640px) {
+      .hero-section { min-height: 65vh; }
+    }
+
     /* ── Hero image ──────────────────────────────────────── */
     .hero-img {
       position: absolute;
@@ -172,7 +179,7 @@
   <!-- ══════════════════════════════════════════════════════
        SECTION 1 — HERO
   ══════════════════════════════════════════════════════ -->
-  <section id="home" class="relative min-h-screen flex items-end justify-center overflow-hidden">
+  <section id="home" class="hero-section relative flex items-end justify-center overflow-hidden">
 
     <div class="absolute inset-0 bg-dark">
       <img src="./images/lole.jpg" alt="נעמה וכרם על הבמה"

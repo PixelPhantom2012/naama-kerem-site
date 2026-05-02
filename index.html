@@ -445,10 +445,10 @@
 
        Email delivery via formsubmit.co — no account needed.
        On the FIRST ever form submission, formsubmit.co will
-       send a one-time confirmation email to hagaiheshes@gmail.com.
-       Click "Activate Form" in that email, and every future
-       submission will arrive directly in the inbox.
-       Nothing else to configure.
+       send a one-time confirmation email to the address in the form action.
+       Click "Activate Form" in that email; queued submissions are then delivered.
+       Tip: the form sets _url to this page so submissions work with strict
+       referrer policies (e.g. ngrok, HTTPS). Open the site via a real URL, not file://.
   ══════════════════════════════════════════════════════ -->
   <section id="contact" class="py-20 lg:py-28 bg-cream">
     <div class="max-w-5xl mx-auto px-5 sm:px-8">
@@ -476,8 +476,8 @@
             <input type="hidden" name="_subject"  value="הזמנת הופעה חדשה — נעמה וכרם" />
             <input type="hidden" name="_template" value="table" />
             <input type="hidden" name="_captcha"  value="false" />
-            <!-- Honeypot anti-spam -->
-            <input type="text" name="_honey" class="hidden" tabindex="-1" autocomplete="off" />
+            <!-- Tells FormSubmit the real page URL (Referrer is often stripped on cross-origin fetch) -->
+            <input type="hidden" name="_url" id="contact-form-url" value="" />
 
             <div>
               <label for="name" class="block text-sm font-semibold text-dark mb-1.5">
@@ -672,9 +672,18 @@
     const submitBtn  = document.getElementById('submit-btn');
     const successMsg = document.getElementById('form-success');
     const errorMsg   = document.getElementById('form-error');
+    const formUrlField = document.getElementById('contact-form-url');
+
+    function syncFormSubmitUrl() {
+      if (formUrlField) {
+        formUrlField.value = window.location.href.split('#')[0];
+      }
+    }
+    syncFormSubmitUrl();
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      syncFormSubmitUrl();
 
       // Client-side validation: name + at least one contact method
       const name        = form.querySelector('#name').value.trim();
@@ -691,25 +700,55 @@
       successMsg.classList.add('hidden');
       errorMsg.classList.add('hidden');
 
+      const formData = new FormData(form);
+      const payload = {};
+      formData.forEach((value, key) => {
+        payload[key] = value;
+      });
+      payload._url = window.location.href.split('#')[0];
+
       try {
-        // formsubmit.co AJAX endpoint returns JSON { success: "true" }
+        // JSON body matches FormSubmit AJAX examples; includes _url for strict referrers / HTTPS.
         const response = await fetch(form.action, {
           method:  'POST',
-          body:    new FormData(form),
-          headers: { 'Accept': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
         });
 
-        const data = await response.json().catch(() => ({}));
+        const raw  = await response.text();
+        let data   = {};
+        try {
+          data = raw ? JSON.parse(raw) : {};
+        } catch {
+          throw new Error('BAD_JSON');
+        }
 
-        if (response.ok && data.success === 'true') {
+        const ok =
+          response.ok &&
+          (data.success === true || data.success === 'true');
+
+        if (ok) {
           form.reset();
-          successMsg.textContent = 'תודה! נחזור אליכם בהקדם.';
+          successMsg.textContent =
+            'תודה! נחזור אליכם בהקדם. אם זו הפעם הראשונה, בדקו גם את תיבת האימייל לאישור FormSubmit.';
           successMsg.classList.remove('hidden');
         } else {
-          throw new Error('submission failed');
+          const apiMsg = typeof data.message === 'string' ? data.message.trim() : '';
+          throw new Error(apiMsg || 'submission failed');
         }
-      } catch {
-        errorMsg.textContent = 'אירעה שגיאה. אנא נסו שנית או פנו אלינו ישירות בוואטסאפ.';
+      } catch (err) {
+        let hebrew =
+          'אירעה שגיאה. אנא נסו שנית או פנו אלינו ישירות בוואטסאפ.';
+        if (err.message === 'BAD_JSON') {
+          hebrew =
+            'השרת החזיר תשובה לא צפויה. בדקו חיבור או נסו שוב מאוחר יותר.';
+        } else if (err.message && err.message !== 'submission failed') {
+          hebrew = `אירעה שגיאה: ${err.message}`;
+        }
+        errorMsg.textContent = hebrew;
         errorMsg.classList.remove('hidden');
       } finally {
         submitBtn.disabled    = false;
